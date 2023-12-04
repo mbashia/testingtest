@@ -1,0 +1,30 @@
+<.header>
+  Cat <%= @cat.id %>
+  <:subtitle>This is a cat record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/cats/#{@cat}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit cat</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @cat.name %></:item>
+  <:item title="Age"><%= @cat.age %></:item>
+  <:item title="Description"><%= @cat.description %></:item>
+  <:item title="Status"><%= @cat.status %></:item>
+  <:item title="Career"><%= @cat.career %></:item>
+</.list>
+
+<.back navigate={~p"/cats"}>Back to cats</.back>
+
+<.modal :if={@live_action == :edit} id="cat-modal" show on_cancel={JS.patch(~p"/cats/#{@cat}")}>
+  <.live_component
+    module={TestingtestWeb.CatLive.FormComponent}
+    id={@cat.id}
+    title={@page_title}
+    action={@live_action}
+    cat={@cat}
+    patch={~p"/cats/#{@cat}"}
+  />
+</.modal>
