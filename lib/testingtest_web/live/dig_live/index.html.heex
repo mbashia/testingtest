@@ -1,0 +1,46 @@
+<.header>
+  Listing Feedback
+  <:actions>
+    <.link patch={~p"/feedback/new"}>
+      <.button>New Dig</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="feedback"
+  rows={@streams.feedback}
+  row_click={fn {_id, dig} -> JS.navigate(~p"/feedback/#{dig}") end}
+>
+  <:col :let={{_id, dig}} label="Name"><%= dig.name %></:col>
+  <:col :let={{_id, dig}} label="Email"><%= dig.email %></:col>
+  <:col :let={{_id, dig}} label="Phone"><%= dig.phone %></:col>
+  <:col :let={{_id, dig}} label="Description"><%= dig.description %></:col>
+  <:col :let={{_id, dig}} label="Status"><%= dig.status %></:col>
+  <:col :let={{_id, dig}} label="User"><%= dig.user_id %></:col>
+  <:action :let={{_id, dig}}>
+    <div class="sr-only">
+      <.link navigate={~p"/feedback/#{dig}"}>Show</.link>
+    </div>
+    <.link patch={~p"/feedback/#{dig}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, dig}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: dig.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="dig-modal" show on_cancel={JS.patch(~p"/feedback")}>
+  <.live_component
+    module={TestingtestWeb.DigLive.FormComponent}
+    id={@dig.id || :new}
+    title={@page_title}
+    action={@live_action}
+    dig={@dig}
+    patch={~p"/feedback"}
+  />
+</.modal>

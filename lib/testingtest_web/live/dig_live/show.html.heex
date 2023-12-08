@@ -1,0 +1,31 @@
+<.header>
+  Dig <%= @dig.id %>
+  <:subtitle>This is a dig record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/feedback/#{@dig}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit dig</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @dig.name %></:item>
+  <:item title="Email"><%= @dig.email %></:item>
+  <:item title="Phone"><%= @dig.phone %></:item>
+  <:item title="Description"><%= @dig.description %></:item>
+  <:item title="Status"><%= @dig.status %></:item>
+  <:item title="User"><%= @dig.user_id %></:item>
+</.list>
+
+<.back navigate={~p"/feedback"}>Back to feedback</.back>
+
+<.modal :if={@live_action == :edit} id="dig-modal" show on_cancel={JS.patch(~p"/feedback/#{@dig}")}>
+  <.live_component
+    module={TestingtestWeb.DigLive.FormComponent}
+    id={@dig.id}
+    title={@page_title}
+    action={@live_action}
+    dig={@dig}
+    patch={~p"/feedback/#{@dig}"}
+  />
+</.modal>

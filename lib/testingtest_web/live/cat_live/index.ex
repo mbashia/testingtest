@@ -6,6 +6,7 @@ defmodule TestingtestWeb.CatLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
+    IO.inspect socket.assigns
     {:ok, stream(socket, :cats, Cats.list_cats())}
   end
 
@@ -38,10 +39,5 @@ defmodule TestingtestWeb.CatLive.Index do
   end
 
   @impl true
-  def handle_event("delete", %{"id" => id}, socket) do
-    cat = Cats.get_cat!(id)
-    {:ok, _} = Cats.delete_cat(cat)
 
-    {:noreply, stream_delete(socket, :cats, cat)}
-  end
 end

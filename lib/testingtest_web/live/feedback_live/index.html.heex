@@ -1,0 +1,46 @@
+<.header>
+  Listing Feedbacks
+  <:actions>
+    <.link patch={~p"/feedbacks/new"}>
+      <.button>New Feedback</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="feedbacks"
+  rows={@streams.feedbacks}
+  row_click={fn {_id, feedback} -> JS.navigate(~p"/feedbacks/#{feedback}") end}
+>
+  <:col :let={{_id, feedback}} label="Name"><%= feedback.name %></:col>
+  <:col :let={{_id, feedback}} label="Email"><%= feedback.email %></:col>
+  <:col :let={{_id, feedback}} label="Phone"><%= feedback.phone %></:col>
+  <:col :let={{_id, feedback}} label="Description"><%= feedback.description %></:col>
+  <:col :let={{_id, feedback}} label="Status"><%= feedback.status %></:col>
+  <:col :let={{_id, feedback}} label="User"><%= feedback.user_id %></:col>
+  <:action :let={{_id, feedback}}>
+    <div class="sr-only">
+      <.link navigate={~p"/feedbacks/#{feedback}"}>Show</.link>
+    </div>
+    <.link patch={~p"/feedbacks/#{feedback}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, feedback}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: feedback.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="feedback-modal" show on_cancel={JS.patch(~p"/feedbacks")}>
+  <.live_component
+    module={TestingtestWeb.FeedbackLive.FormComponent}
+    id={@feedback.id || :new}
+    title={@page_title}
+    action={@live_action}
+    feedback={@feedback}
+    patch={~p"/feedbacks"}
+  />
+</.modal>
